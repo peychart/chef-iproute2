@@ -19,19 +19,19 @@
     <td><tt>['iproute2']['package']</tt></td>
     <td>String</td>
     <td>iproute2 package name</td>
-    <td><tt>true</tt></td>
+    <td><tt>iproute2</tt></td>
   </tr>
   <tr>
     <td><tt>['iproute2']['start']</tt></td>
     <td>StringArea</td>
     <td>Successive portions of the ip command of the start service</td>
-    <td><tt>false</tt></td>
+    <td><tt>nil</tt></td>
   </tr>
   <tr>
     <td><tt>['iproute2']['stop']</tt></td>
     <td>StringArea</td>
     <td>Successive portions of the ip command of the stop service</td>
-    <td><tt>false</tt></td>
+    <td><tt>nil</tt></td>
   </tr>
 </table>
 
