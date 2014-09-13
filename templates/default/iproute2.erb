@@ -19,14 +19,16 @@ PATH=/sbin:/bin:/usr/sbin:/usr/bin
 
 do_start() {
  true
-<% if @start %> ip route delete all<%end%>
+<% if @start %> ip route delete all
 <% @start.each do |i| %><%= " #{i}" %><% end %>
+<%end%>
 }
 
 do_stop()  {
  true
-<% if @stop %> ip route delete all<%end%>
+<% if @stop %> ip route delete all
 <% @stop.each  do |i| %><%= " #{i}" %><% end %>
+<%end%>
 }
 
 case "$1" in
