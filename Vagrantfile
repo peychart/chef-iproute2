@@ -4,85 +4,52 @@
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
 VAGRANTFILE_API_VERSION = "2"
 
-Vagrant.require_version ">= 1.5.0"
-
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  # All Vagrant configuration is done here. The most common configuration
-  # options are documented and commented below. For a complete reference,
-  # please see the online documentation at vagrantup.com.
+  config.vm.box = "ubuntu14.04-chef"
+  config.vm.box_url = "http://repository.srv.gov.pf/box/ubuntu14.04-chef-vb.box"
+  config.vm.hostname = "aggregator.dev.gov.pf"
 
-  config.vm.hostname = "iproute2-berkshelf"
+  # Personalisation du provider : virtualbox
+  config.vm.provider "virtualbox" do |v|
+    v.gui = true
+    v.name = "aggregator"
+    v.memory = 512
+    v.cpus = 1
+  end
 
-  # Set the version of chef to install using the vagrant-omnibus plugin
-  config.omnibus.chef_version = :latest
+  # Configuration reseau:
+  config.vm.network "private_network", ip: "192.168.7.2"
 
-  # Every Vagrant virtual environment requires a box to build off of.
-  # If this value is a shorthand to a box in Vagrant Cloud then 
-  # config.vm.box_url doesn't need to be specified.
-  config.vm.box = "chef/ubuntu-14.04"
+  # chef-solo installation:
+  config.vm.provision :shell, inline: "export DEBIAN_FRONTEND=noninteractive; apt-get install chef -y"
 
-  # The url from where the 'config.vm.box' box will be fetched if it
-  # is not a Vagrant Cloud box and if it doesn't already exist on the 
-  # user's system.
-  # config.vm.box_url = "https://vagrantcloud.com/chef/ubuntu-14.04/version/1/provider/virtualbox.box"
+  # Provisionner un serveur aggregator avec chef-solo:
+  config.vm.provision "chef_solo" do |chef|
+    chef.custom_config_path = "Vagrantfile.chef"
+    chef.cookbooks_path = ["cookbooks"]
+    chef.roles_path = "roles"
+    chef.data_bags_path=["data_bags"]
+    chef.encrypted_data_bag_secret_key_path = "secret_key"
 
-  # Assign this VM to a host-only network IP, allowing you to access it
-  # via the IP. Host-only networks can talk to the host machine as well as
-  # any other machines on the same network, but cannot be accessed (through this
-  # network interface) by any external networks.
-  config.vm.network :private_network, type: "dhcp"
+    #chef.add_role("aggregator")
 
-  # Create a forwarded port mapping which allows access to a specific port
-  # within the machine from a port on the host machine. In the example below,
-  # accessing "localhost:8080" will access port 80 on the guest machine.
+   #chef.add_recipe "apt::default"
 
-  # Share an additional folder to the guest VM. The first argument is
-  # the path on the host to the actual folder. The second argument is
-  # the path on the guest to mount the folder. And the optional third
-  # argument is a set of non-required options.
-  # config.vm.synced_folder "../data", "/vagrant_data"
-
-  # Provider-specific configuration so you can fine-tune various
-  # backing providers for Vagrant. These expose provider-specific options.
-  # Example for VirtualBox:
-  #
-  # config.vm.provider :virtualbox do |vb|
-  #   # Don't boot with headless mode
-  #   vb.gui = true
-  #
-  #   # Use VBoxManage to customize the VM. For example to change memory:
-  #   vb.customize ["modifyvm", :id, "--memory", "1024"]
-  # end
-  #
-  # View the documentation for the provider you're using for more
-  # information on available options.
-
-  # The path to the Berksfile to use with Vagrant Berkshelf
-  # config.berkshelf.berksfile_path = "./Berksfile"
-
-  # Enabling the Berkshelf plugin. To enable this globally, add this configuration
-  # option to your ~/.vagrant.d/Vagrantfile file
-  config.berkshelf.enabled = true
-
-  # An array of symbols representing groups of cookbook described in the Vagrantfile
-  # to exclusively install and copy to Vagrant's shelf.
-  # config.berkshelf.only = []
-
-  # An array of symbols representing groups of cookbook described in the Vagrantfile
-  # to skip installing and copying to Vagrant's shelf.
-  # config.berkshelf.except = []
-
-  config.vm.provision :chef_solo do |chef|
+   # avant, modifier les attributs par defaut:
     chef.json = {
-      mysql: {
-        server_root_password: 'rootpass',
-        server_debian_password: 'debpass',
-        server_repl_password: 'replpass'
-      }
+     "iproute2" => {
+       "start" => [ \
+         "ip route add default scope global",
+         "nexthop via 10.0.2.3 weight 3",
+         "nexthop via 10.0.2.4 weight 3",
+         "nexthop via 10.0.2.5 weight 3"
+       ],
+       "stop" => [ "ip route add default dev eth0" ]
+     }
     }
 
-    chef.run_list = [
-        "recipe[iproute2::default]"
-    ]
+    chef.add_recipe "iproute2::default"
+
   end
+
 end
