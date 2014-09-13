@@ -1,6 +1,6 @@
 # iproute2-cookbook
 
- Allows to install iproute2 as a service...
+ Chef cookbook which allows to install iproute2 as a service...
 
 ## Supported Platforms
 
