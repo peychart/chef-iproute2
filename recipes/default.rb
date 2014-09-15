@@ -18,6 +18,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+puts "iproute2 recipe:"
+
 package 'iproute2' do
  package_name node['iproute2']['package']
  options('--force')
@@ -40,3 +42,5 @@ end
 service 'iproute2' do
   action [ :enable, :restart ]
 end
+
+puts "iproute2 ended."
