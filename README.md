@@ -9,6 +9,7 @@ To use the Vagrantfile, you need to install some plugins :
 ```
 vagrant plugin install vagrant-berkshelf
 vagrant plugin install vagrant-omnibus
+vagrant plugin install vagrant-cachier
 ```
 
 ## Supported Platforms
