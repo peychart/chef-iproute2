@@ -7,6 +7,11 @@ VAGRANTFILE_API_VERSION = "2"
 Vagrant.require_version ">= 1.5.0"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+  # vagrant cachier plugin
+  if Vagrant.has_plugin?("vagrant-cachier")
+     config.cache.scope = :box
+  end
   # All Vagrant configuration is done here. The most common configuration
   # options are documented and commented below. For a complete reference,
   # please see the online documentation at vagrantup.com.
