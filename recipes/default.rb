@@ -18,7 +18,20 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-puts "iproute2 recipe:"
+if node.default['iproute2']['package'] == ""
+  case node[:platform]
+    when "ubuntu","debian"
+      if node[:platform_version] == "14.04"
+           node.default['iproute2']['package'] = "iproute2"
+      else node.default['iproute2']['package'] = "iproute"
+      end
+    else
+      puts '*****************************************************'
+      puts 'Set your default[\'iproute2\'][\'package\']\' attribute...'
+      puts '*****************************************************'
+      return 1
+  end
+end
 
 package 'iproute2' do
  package_name node['iproute2']['package']
@@ -42,5 +55,3 @@ end
 service 'iproute2' do
   action [ :enable, :restart ]
 end
-
-puts "iproute2 ended."
