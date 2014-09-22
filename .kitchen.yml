@@ -1,0 +1,21 @@
+---
+driver:
+  name: vagrant
+
+provisioner:
+  name: chef_solo
+
+platforms:
+  - name: ubuntu-14.04
+    driver_config:
+      box: ubuntu-14.04
+      box_url: http://bit.ly/1nHCDF6
+
+suites:
+  - name: default
+    run_list:
+      - recipe[iproute2::default]
+    attributes:
+      iproute2:
+        start: [ "ip route add default scope global", "nexthop via 10.0.2.3 weight 3", "nexthop via 10.0.2.4 weight 3", "nexthop via 10.0.2.5 weight 3" ]
+        stop: [ "ip route add default dev eth0" ]
