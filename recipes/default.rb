@@ -35,7 +35,7 @@ end
 
 package 'iproute2' do
  package_name node['iproute2']['package']
- options('--force')
+#options('--force')
  action :upgrade
 end
 
