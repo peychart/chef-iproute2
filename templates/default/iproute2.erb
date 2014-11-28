@@ -19,14 +19,14 @@ PATH=/sbin:/bin:/usr/sbin:/usr/bin
 
 do_start() {
  true
-<% if @start %> ip route delete all
+<% if @start %> ip route| grep -v "proto kernel"| while read r; do ip route del $r; done
 <% @start.each do |i| %><%= " #{i}" %><% end %>
 <%end%>
 }
 
 do_stop()  {
  true
-<% if @stop %> ip route delete all
+<% if @stop %> ip route| grep -v "proto kernel"| while read r; do ip route del $r; done
 <% @stop.each  do |i| %><%= " #{i}" %><% end %>
 <%end%>
 }
