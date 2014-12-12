@@ -17,16 +17,20 @@ PATH=/sbin:/bin:/usr/sbin:/usr/bin
 
 . /lib/lsb/init-functions
 
+ipRouteDeleteAll() {
+ ip route| grep -v "proto kernel"| while read r; do ip route del $r; done
+}
+
 do_start() {
  true
-<% if @start %> ip route| grep -v "proto kernel"| while read r; do ip route del $r; done
+<% if @start %> ipRouteDeleteAll
 <% @start.each do |i| %><%= " #{i}" %><% end %>
 <%end%>
 }
 
 do_stop()  {
  true
-<% if @stop %> ip route| grep -v "proto kernel"| while read r; do ip route del $r; done
+<% if @stop %> ipRouteDeleteAll
 <% @stop.each  do |i| %><%= " #{i}" %><% end %>
 <%end%>
 }
