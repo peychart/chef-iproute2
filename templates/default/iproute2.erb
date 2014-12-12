@@ -22,16 +22,18 @@ ipRouteDeleteAll() {
 }
 
 do_start() {
- true
 <% if @start %> ipRouteDeleteAll
 <% @start.each do |i| %><%= " #{i}" %><% end %>
+<%else%>
+ true
 <%end%>
 }
 
 do_stop()  {
- true
 <% if @stop %> ipRouteDeleteAll
 <% @stop.each  do |i| %><%= " #{i}" %><% end %>
+<%else%>
+ true
 <%end%>
 }
 
