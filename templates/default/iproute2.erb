@@ -18,7 +18,7 @@ PATH=/sbin:/bin:/usr/sbin:/usr/bin
 . /lib/lsb/init-functions
 
 ipRouteDeleteAll() {
- ip route| egrep -v "proto kernel\\|^[ ,	]"| while read r; do ip route del $r; done
+ ip route| egrep -v "proto kernel|^[ ,	]"| while read r; do ip route del $r; done
 }
 
 do_start() {
